@@ -4,8 +4,8 @@ import { useCallback, useEffect, useState } from 'react';
 import LineGraphComponent from '../components/LineGraphComponent/LineGraph';
 import PrefectureCheckBoxes from '../components/PrefectureCheckBoxes/PrefectureCheckBoxes';
 import type {
-  AllPopulationData,
   PopulationAPIResponse,
+  PopulationData,
   Prefecture,
   PrefecturesAPIResponse,
 } from '../types';
@@ -20,7 +20,7 @@ const resasAxiosInstance: AxiosInstance = axios.create({
 
 const Home = () => {
   const [prefectures, setPrefectures] = useState<Prefecture[]>([]);
-  const [allPopulationData, setAllPopulationData] = useState<AllPopulationData[]>([]);
+  const [totalPopulationData, setTotalPopulationData] = useState<PopulationData[]>([]);
   const [combinedData, setCombinedData] = useState<
     { year: number; [key: string]: number | null }[]
   >([]);
@@ -46,14 +46,14 @@ const Home = () => {
         const response = await resasAxiosInstance.get<PopulationAPIResponse>(populationEndPoint, {
           params: parameters,
         });
-        const populationData: AllPopulationData = {
+        const totalPopulationData: PopulationData = {
           prefCode: parameters.prefCode,
           prefName: prefName ?? '',
           boundaryYear: response.data.result.boundaryYear,
           data: response.data.result.data[0].data,
         };
 
-        setAllPopulationData((prevData) => [...prevData, populationData]);
+        setTotalPopulationData((prevData) => [...prevData, totalPopulationData]);
       } catch (error) {
         console.error(error);
       }
@@ -61,13 +61,13 @@ const Home = () => {
 
     const checkedPrefectures = prefectures.filter((prefecture) => prefecture.isChecked);
     const notFetchedPrefectures = checkedPrefectures.filter(
-      (prefecture) => !allPopulationData.some((data) => data.prefCode === prefecture.prefCode),
+      (prefecture) => !totalPopulationData.some((data) => data.prefCode === prefecture.prefCode),
     );
 
     notFetchedPrefectures.forEach((prefecture) => {
       fetchPopulationData(prefecture.prefCode, prefecture.prefName);
     });
-  }, [prefectures, allPopulationData, setAllPopulationData]);
+  }, [prefectures, totalPopulationData, setTotalPopulationData]);
 
   const fetchPrefectures = async () => {
     const prefecturesEndpoint = '/api/v1/prefectures';
@@ -85,7 +85,7 @@ const Home = () => {
     }
   };
 
-  const getCombinedData = (data: AllPopulationData[]) => {
+  const getCombinedData = (data: PopulationData[]) => {
     const yearMap: { [key: number]: { year: number; [key: string]: number | null } } = {};
 
     data.forEach((popData) => {
@@ -117,9 +117,9 @@ const Home = () => {
   }, [prefectures, getCheckedPrefecturesPopulationData]);
 
   useEffect(() => {
-    const data = getCombinedData(allPopulationData);
+    const data = getCombinedData(totalPopulationData);
     setCombinedData(data);
-  }, [allPopulationData, prefectures]);
+  }, [totalPopulationData, prefectures]);
 
   return (
     <div className={styles.container}>
@@ -130,7 +130,7 @@ const Home = () => {
 
       <LineGraphComponent
         combinedData={combinedData}
-        allPopulationData={allPopulationData}
+        populationData={totalPopulationData}
         prefectures={prefectures}
       />
     </div>

@@ -26,7 +26,7 @@ export type PopulationAPIResponse = {
   };
 };
 
-export type AllPopulationData = {
+export type PopulationData = {
   prefCode: number;
   prefName: string;
   boundaryYear: number;

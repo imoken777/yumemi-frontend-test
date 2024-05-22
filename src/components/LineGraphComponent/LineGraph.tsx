@@ -1,18 +1,18 @@
 import { CartesianGrid, Legend, Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts';
-import type { AllPopulationData, Prefecture } from '../../types';
+import type { PopulationData, Prefecture } from '../../types';
 
 type LineGraphProps = {
   combinedData: {
     [key: string]: number | null;
     year: number;
   }[];
-  allPopulationData: AllPopulationData[];
+  populationData: PopulationData[];
   prefectures: Prefecture[];
 };
 
 const LineGraphComponent: React.FC<LineGraphProps> = ({
   combinedData,
-  allPopulationData,
+  populationData,
   prefectures,
 }) => {
   const numberToColor = (number: number) => {
@@ -53,7 +53,7 @@ const LineGraphComponent: React.FC<LineGraphProps> = ({
       <YAxis tickFormatter={formatYAxis} />
       <Tooltip />
       <Legend />
-      {allPopulationData.map((popData, index) => {
+      {populationData.map((popData, index) => {
         const isChecked = prefectures.some(
           (pref) => pref.prefCode === popData.prefCode && pref.isChecked,
         );
