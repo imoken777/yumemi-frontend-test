@@ -1,7 +1,7 @@
 import axios from 'axios';
-import styles from './index.module.css';
-import type { Prefecture, PrefecturesAPIResponse } from '../types';
 import { useEffect, useState } from 'react';
+import PrefectureCheckBoxes from '../components/PrefectureCheckBoxes/PrefectureCheckBoxes';
+import styles from './index.module.css';
 
 const Home = () => {
   const [prefectures, setPrefectures] = useState<Prefecture[]>([]);
@@ -41,31 +41,14 @@ const Home = () => {
   }, []);
   return (
     <div className={styles.container}>
-      {prefectures.length > 0 && (
-        <div className={styles.prefecturesContainer}>
-          {prefectures.map((prefecture) => (
-            <div key={prefecture.prefCode}>
-              <label>
-                <input
-                  type="checkbox"
-                  name={prefecture.prefName}
-                  onChange={handlePrefectureCheckbox}
-                />
-                {prefecture.prefName}
-              </label>
+      <PrefectureCheckBoxes
+        prefectures={prefectures}
+        handlePrefectureCheckbox={handlePrefectureCheckbox}
+      />
             </div>
           ))}
         </div>
       )}
-
-      <h1>checked Items</h1>
-      <ul>
-        {prefectures
-          .filter((prefecture) => prefecture.isChecked)
-          .map((prefecture) => (
-            <li key={prefecture.prefCode}>{prefecture.prefName}</li>
-          ))}
-      </ul>
     </div>
   );
 };
