@@ -9,4 +9,7 @@ module.exports = {
   trailingSlash: true,
   eslint: { ignoreDuringBuilds: true },
   typescript: { ignoreBuildErrors: true },
+  env: {
+    RESAS_API_KEY: process.env.RESAS_API_KEY,
+  },
 };
