@@ -1,6 +1,7 @@
 import type { AxiosInstance } from 'axios';
 import axios from 'axios';
 import { useCallback, useEffect, useState } from 'react';
+import LineGraphComponent from '../components/LineGraphComponent/LineGraph';
 import PrefectureCheckBoxes from '../components/PrefectureCheckBoxes/PrefectureCheckBoxes';
 import type {
   AllPopulationData,
@@ -20,6 +21,9 @@ const resasAxiosInstance: AxiosInstance = axios.create({
 const Home = () => {
   const [prefectures, setPrefectures] = useState<Prefecture[]>([]);
   const [allPopulationData, setAllPopulationData] = useState<AllPopulationData[]>([]);
+  const [combinedData, setCombinedData] = useState<
+    { year: number; [key: string]: number | null }[]
+  >([]);
 
   const handlePrefectureCheckbox = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = event.target;
@@ -81,6 +85,29 @@ const Home = () => {
     }
   };
 
+  const getCombinedData = (data: AllPopulationData[]) => {
+    const yearMap: { [key: number]: { year: number; [key: string]: number | null } } = {};
+
+    data.forEach((popData) => {
+      popData.data.forEach((entry) => {
+        if (yearMap[entry.year] === undefined) {
+          yearMap[entry.year] = { year: entry.year };
+        }
+        yearMap[entry.year][popData.prefName] = entry.value;
+      });
+    });
+
+    Object.values(yearMap).forEach((yearData) => {
+      data.forEach((popData) => {
+        if (!(popData.prefName in yearData)) {
+          yearData[popData.prefName] = null;
+        }
+      });
+    });
+
+    return Object.values(yearMap);
+  };
+
   useEffect(() => {
     fetchPrefectures();
   }, []);
@@ -89,11 +116,22 @@ const Home = () => {
     getCheckedPrefecturesPopulationData();
   }, [prefectures, getCheckedPrefecturesPopulationData]);
 
+  useEffect(() => {
+    const data = getCombinedData(allPopulationData);
+    setCombinedData(data);
+  }, [allPopulationData, prefectures]);
+
   return (
     <div className={styles.container}>
       <PrefectureCheckBoxes
         prefectures={prefectures}
         handlePrefectureCheckbox={handlePrefectureCheckbox}
+      />
+
+      <LineGraphComponent
+        combinedData={combinedData}
+        allPopulationData={allPopulationData}
+        prefectures={prefectures}
       />
     </div>
   );
