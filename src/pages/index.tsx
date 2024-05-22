@@ -1,7 +1,13 @@
 import type { AxiosInstance } from 'axios';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import PrefectureCheckBoxes from '../components/PrefectureCheckBoxes/PrefectureCheckBoxes';
+import type {
+  AllPopulationData,
+  PopulationAPIResponse,
+  Prefecture,
+  PrefecturesAPIResponse,
+} from '../types';
 import styles from './index.module.css';
 
 const resasAxiosInstance: AxiosInstance = axios.create({
@@ -13,6 +19,7 @@ const resasAxiosInstance: AxiosInstance = axios.create({
 
 const Home = () => {
   const [prefectures, setPrefectures] = useState<Prefecture[]>([]);
+  const [allPopulationData, setAllPopulationData] = useState<AllPopulationData[]>([]);
 
   const handlePrefectureCheckbox = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = event.target;
@@ -23,11 +30,40 @@ const Home = () => {
     );
   };
 
+  const getCheckedPrefecturesPopulationData = useCallback(() => {
+    const fetchPopulationData = async (prefCode: number, prefName: string) => {
+      const populationEndPoint = '/api/v1/population/composition/perYear';
+      const parameters = {
+        prefCode,
+        cityCode: '-',
+      };
+
+      try {
+        const response = await resasAxiosInstance.get<PopulationAPIResponse>(populationEndPoint, {
+          params: parameters,
+        });
+        const populationData: AllPopulationData = {
+          prefCode: parameters.prefCode,
+          prefName: prefName ?? '',
+          boundaryYear: response.data.result.boundaryYear,
+          data: response.data.result.data[0].data,
+        };
+
+        setAllPopulationData((prevData) => [...prevData, populationData]);
+      } catch (error) {
+        console.error(error);
       }
-      return prefecture;
+    };
+
+    const checkedPrefectures = prefectures.filter((prefecture) => prefecture.isChecked);
+    const notFetchedPrefectures = checkedPrefectures.filter(
+      (prefecture) => !allPopulationData.some((data) => data.prefCode === prefecture.prefCode),
+    );
+
+    notFetchedPrefectures.forEach((prefecture) => {
+      fetchPopulationData(prefecture.prefCode, prefecture.prefName);
     });
-    setPrefectures(newPrefectures);
-  };
+  }, [prefectures, allPopulationData, setAllPopulationData]);
 
   const fetchPrefectures = async () => {
     const prefecturesEndpoint = '/api/v1/prefectures';
@@ -48,12 +84,18 @@ const Home = () => {
   useEffect(() => {
     fetchPrefectures();
   }, []);
+
+  useEffect(() => {
+    getCheckedPrefecturesPopulationData();
+  }, [prefectures, getCheckedPrefecturesPopulationData]);
+
   return (
     <div className={styles.container}>
       <PrefectureCheckBoxes
         prefectures={prefectures}
         handlePrefectureCheckbox={handlePrefectureCheckbox}
       />
+
             </div>
           ))}
         </div>

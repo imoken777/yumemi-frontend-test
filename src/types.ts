@@ -11,3 +11,27 @@ export type Prefecture = {
   prefName: string;
   isChecked: boolean;
 };
+
+export type PopulationAPIResponse = {
+  message: string;
+  result: {
+    boundaryYear: number;
+    data: {
+      label: string;
+      data: {
+        year: number;
+        value: number;
+      }[];
+    }[];
+  };
+};
+
+export type AllPopulationData = {
+  prefCode: number;
+  prefName: string;
+  boundaryYear: number;
+  data: {
+    year: number;
+    value: number;
+  }[];
+};
