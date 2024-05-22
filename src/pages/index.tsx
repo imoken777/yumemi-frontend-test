@@ -95,11 +95,6 @@ const Home = () => {
         prefectures={prefectures}
         handlePrefectureCheckbox={handlePrefectureCheckbox}
       />
-
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   );
 };
