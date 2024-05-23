@@ -1,3 +1,4 @@
+import type { FC } from 'react';
 import type { PrefectureWithCheck } from '../../types';
 import styles from './PrefectureCheckBoxes.module.css';
 
@@ -6,7 +7,7 @@ type PrefectureCheckBoxesProps = {
   handlePrefectureCheckbox: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-const PrefectureCheckBoxes: React.FC<PrefectureCheckBoxesProps> = ({
+const PrefectureCheckBoxes: FC<PrefectureCheckBoxesProps> = ({
   prefectures,
   handlePrefectureCheckbox,
 }) => {
