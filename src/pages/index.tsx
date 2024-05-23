@@ -1,6 +1,6 @@
 import type { AxiosInstance } from 'axios';
 import axios from 'axios';
-import { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import LineGraphComponent from '../components/LineGraphComponent/LineGraph';
 import PrefectureCheckBoxes from '../components/PrefectureCheckBoxes/PrefectureCheckBoxes';
 import type {
@@ -21,9 +21,6 @@ const resasAxiosInstance: AxiosInstance = axios.create({
 const Home: React.FC = () => {
   const [prefectures, setPrefectures] = useState<PrefectureWithCheck[]>([]);
   const [totalPopulationData, setTotalPopulationData] = useState<PopulationData[]>([]);
-  const [combinedData, setCombinedData] = useState<
-    { year: number; [key: string]: number | null }[]
-  >([]);
 
   const handlePrefectureCheckbox = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = event.target;
@@ -85,10 +82,10 @@ const Home: React.FC = () => {
     }
   };
 
-  const getCombinedData = (data: PopulationData[]) => {
+  const combinedPopulationByYearData = useMemo(() => {
     const yearMap: { [key: number]: { year: number; [key: string]: number | null } } = {};
 
-    data.forEach((popData) => {
+    totalPopulationData.forEach((popData) => {
       popData.data.forEach((entry) => {
         if (yearMap[entry.year] === undefined) {
           yearMap[entry.year] = { year: entry.year };
@@ -98,7 +95,7 @@ const Home: React.FC = () => {
     });
 
     Object.values(yearMap).forEach((yearData) => {
-      data.forEach((popData) => {
+      totalPopulationData.forEach((popData) => {
         if (!(popData.prefName in yearData)) {
           yearData[popData.prefName] = null;
         }
@@ -106,7 +103,7 @@ const Home: React.FC = () => {
     });
 
     return Object.values(yearMap);
-  };
+  }, [totalPopulationData]);
 
   useEffect(() => {
     fetchPrefectures();
@@ -116,11 +113,6 @@ const Home: React.FC = () => {
     getCheckedPrefecturesPopulationData();
   }, [prefectures, getCheckedPrefecturesPopulationData]);
 
-  useEffect(() => {
-    const data = getCombinedData(totalPopulationData);
-    setCombinedData(data);
-  }, [totalPopulationData, prefectures]);
-
   return (
     <div className={styles.container}>
       <PrefectureCheckBoxes
@@ -129,7 +121,7 @@ const Home: React.FC = () => {
       />
 
       <LineGraphComponent
-        combinedData={combinedData}
+        combinedData={combinedPopulationByYearData}
         populationData={totalPopulationData}
         prefectures={prefectures}
       />
