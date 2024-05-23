@@ -3,6 +3,7 @@ import axios from 'axios';
 import type { FC } from 'react';
 import { useEffect, useState } from 'react';
 import LineGraphComponent from '../components/LineGraphComponent/LineGraph';
+import PopulationLabelSelector from '../components/PopulationLabelSelector/PopulationLabelSelector';
 import PrefectureCheckBoxes from '../components/PrefectureCheckBoxes/PrefectureCheckBoxes';
 import type {
   AllPopulationData,
@@ -21,6 +22,11 @@ const resasAxiosInstance: AxiosInstance = axios.create({
   },
 });
 
+const multilingualPopulationLabels: MultilingualPopulationLabels = [
+  ['total', 'juvenile', 'workingAge', 'elderly'],
+  ['総人口', '年少人口', '生産年齢人口', '老年人口'],
+];
+
 const Home: FC = () => {
   const [prefecturesWithCheck, setPrefecturesWithCheck] = useState<PrefectureWithCheck[]>([]);
   const [allPopulationData, setAllPopulationData] = useState<AllPopulationData>({
@@ -30,6 +36,7 @@ const Home: FC = () => {
     workingAge: [],
     elderly: [],
   });
+  const [selectedLabel, setSelectedLabel] = useState<EnPopulationLabelType>('total');
 
   const fetchPopulationData = async (prefCode: number, prefName: string) => {
     const populationEndPoint = '/api/v1/population/composition/perYear';
@@ -75,7 +82,7 @@ const Home: FC = () => {
       const selectedPrefecture = updatedPrefectures.find(
         (prefecture) => prefecture.prefName === name,
       );
-      const notFetchedPrefectures = !totalPopulationData.some(
+      const notFetchedPrefectures = !allPopulationData[selectedLabel].some(
         (data) => data.prefCode === selectedPrefecture?.prefCode,
       );
 
@@ -83,6 +90,13 @@ const Home: FC = () => {
         await fetchPopulationData(selectedPrefecture.prefCode, selectedPrefecture.prefName);
       }
     }
+  };
+
+  const handlePopulationLabelChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const { value } = event.target;
+    const matchingLabel = multilingualPopulationLabels[0].find((label) => label === value);
+    if (matchingLabel === undefined) return;
+    setSelectedLabel(matchingLabel);
   };
 
   const fetchPrefectures = async () => {
@@ -112,8 +126,13 @@ const Home: FC = () => {
         handlePrefectureCheckbox={handlePrefectureCheckbox}
       />
 
+      <PopulationLabelSelector
+        selectedLabel={selectedLabel}
+        handlePopulationLabelChange={handlePopulationLabelChange}
+      />
+
       <LineGraphComponent
-        populationData={totalPopulationData}
+        populationData={allPopulationData[selectedLabel]}
         prefecturesWithCheck={prefecturesWithCheck}
       />
     </div>
