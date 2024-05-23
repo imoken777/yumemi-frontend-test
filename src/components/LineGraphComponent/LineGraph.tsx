@@ -1,5 +1,5 @@
 import { CartesianGrid, Legend, Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts';
-import type { PopulationData, Prefecture } from '../../types';
+import type { PopulationData, PrefectureWithCheck } from '../../types';
 
 type LineGraphProps = {
   combinedData: {
@@ -7,7 +7,7 @@ type LineGraphProps = {
     year: number;
   }[];
   populationData: PopulationData[];
-  prefectures: Prefecture[];
+  prefectures: PrefectureWithCheck[];
 };
 
 const LineGraphComponent: React.FC<LineGraphProps> = ({

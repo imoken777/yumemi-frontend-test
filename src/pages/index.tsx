@@ -6,7 +6,7 @@ import PrefectureCheckBoxes from '../components/PrefectureCheckBoxes/PrefectureC
 import type {
   PopulationAPIResponse,
   PopulationData,
-  Prefecture,
+  PrefectureWithCheck,
   PrefecturesAPIResponse,
 } from '../types';
 import styles from './index.module.css';
@@ -18,8 +18,8 @@ const resasAxiosInstance: AxiosInstance = axios.create({
   },
 });
 
-const Home = () => {
-  const [prefectures, setPrefectures] = useState<Prefecture[]>([]);
+const Home: React.FC = () => {
+  const [prefectures, setPrefectures] = useState<PrefectureWithCheck[]>([]);
   const [totalPopulationData, setTotalPopulationData] = useState<PopulationData[]>([]);
   const [combinedData, setCombinedData] = useState<
     { year: number; [key: string]: number | null }[]
@@ -74,7 +74,7 @@ const Home = () => {
 
     try {
       const response = await resasAxiosInstance.get<PrefecturesAPIResponse>(prefecturesEndpoint);
-      const prefData: Prefecture[] = response.data.result.map((pref) => ({
+      const prefData: PrefectureWithCheck[] = response.data.result.map((pref) => ({
         prefCode: pref.prefCode,
         prefName: pref.prefName,
         isChecked: false,
