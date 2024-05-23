@@ -1,11 +1,15 @@
 import type { AxiosInstance } from 'axios';
 import axios from 'axios';
-import React, { useEffect, useMemo, useState } from 'react';
+import type { FC } from 'react';
+import { useEffect, useState } from 'react';
 import LineGraphComponent from '../components/LineGraphComponent/LineGraph';
+import PopulationLabelSelector from '../components/PopulationLabelSelector/PopulationLabelSelector';
 import PrefectureCheckBoxes from '../components/PrefectureCheckBoxes/PrefectureCheckBoxes';
 import type {
+  AllPopulationData,
+  EnPopulationLabelType,
+  MultilingualPopulationLabels,
   PopulationAPIResponse,
-  PopulationData,
   PrefectureWithCheck,
   PrefecturesAPIResponse,
 } from '../types';
@@ -18,9 +22,21 @@ const resasAxiosInstance: AxiosInstance = axios.create({
   },
 });
 
-const Home: React.FC = () => {
+const multilingualPopulationLabels: MultilingualPopulationLabels = [
+  ['total', 'juvenile', 'workingAge', 'elderly'],
+  ['総人口', '年少人口', '生産年齢人口', '老年人口'],
+];
+
+const Home: FC = () => {
   const [prefecturesWithCheck, setPrefecturesWithCheck] = useState<PrefectureWithCheck[]>([]);
-  const [totalPopulationData, setTotalPopulationData] = useState<PopulationData[]>([]);
+  const [allPopulationData, setAllPopulationData] = useState<AllPopulationData>({
+    boundaryYear: 0,
+    total: [],
+    juvenile: [],
+    workingAge: [],
+    elderly: [],
+  });
+  const [selectedLabel, setSelectedLabel] = useState<EnPopulationLabelType>('total');
 
   const fetchPopulationData = async (prefCode: number, prefName: string) => {
     const populationEndPoint = '/api/v1/population/composition/perYear';
@@ -33,14 +49,22 @@ const Home: React.FC = () => {
       const response = await resasAxiosInstance.get<PopulationAPIResponse>(populationEndPoint, {
         params: parameters,
       });
-      const totalPopulationData: PopulationData = {
-        prefCode: parameters.prefCode,
-        prefName: prefName ?? '',
-        boundaryYear: response.data.result.boundaryYear,
-        data: response.data.result.data[0].data,
-      };
 
-      setTotalPopulationData((prevData) => [...prevData, totalPopulationData]);
+      const newPopulationData = response.data.result.data.map((data) => {
+        return {
+          prefCode: parameters.prefCode,
+          prefName: prefName ?? '',
+          data: data.data,
+        };
+      });
+
+      setAllPopulationData((prevData) => ({
+        boundaryYear: response.data.result.boundaryYear,
+        total: [...prevData.total, newPopulationData[0]],
+        juvenile: [...prevData.juvenile, newPopulationData[1]],
+        workingAge: [...prevData.workingAge, newPopulationData[2]],
+        elderly: [...prevData.elderly, newPopulationData[3]],
+      }));
     } catch (error) {
       console.error(error);
     }
@@ -58,7 +82,7 @@ const Home: React.FC = () => {
       const selectedPrefecture = updatedPrefectures.find(
         (prefecture) => prefecture.prefName === name,
       );
-      const notFetchedPrefectures = !totalPopulationData.some(
+      const notFetchedPrefectures = !allPopulationData[selectedLabel].some(
         (data) => data.prefCode === selectedPrefecture?.prefCode,
       );
 
@@ -66,6 +90,13 @@ const Home: React.FC = () => {
         await fetchPopulationData(selectedPrefecture.prefCode, selectedPrefecture.prefName);
       }
     }
+  };
+
+  const handlePopulationLabelChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const { value } = event.target;
+    const matchingLabel = multilingualPopulationLabels[0].find((label) => label === value);
+    if (matchingLabel === undefined) return;
+    setSelectedLabel(matchingLabel);
   };
 
   const fetchPrefectures = async () => {
@@ -84,29 +115,6 @@ const Home: React.FC = () => {
     }
   };
 
-  const combinedPopulationByYearData = useMemo(() => {
-    const yearMap: { [key: number]: { year: number; [key: string]: number | null } } = {};
-
-    totalPopulationData.forEach((popData) => {
-      popData.data.forEach((entry) => {
-        if (yearMap[entry.year] === undefined) {
-          yearMap[entry.year] = { year: entry.year };
-        }
-        yearMap[entry.year][popData.prefName] = entry.value;
-      });
-    });
-
-    Object.values(yearMap).forEach((yearData) => {
-      totalPopulationData.forEach((popData) => {
-        if (!(popData.prefName in yearData)) {
-          yearData[popData.prefName] = null;
-        }
-      });
-    });
-
-    return Object.values(yearMap);
-  }, [totalPopulationData]);
-
   useEffect(() => {
     fetchPrefectures();
   }, []);
@@ -118,9 +126,13 @@ const Home: React.FC = () => {
         handlePrefectureCheckbox={handlePrefectureCheckbox}
       />
 
+      <PopulationLabelSelector
+        selectedLabel={selectedLabel}
+        handlePopulationLabelChange={handlePopulationLabelChange}
+      />
+
       <LineGraphComponent
-        combinedData={combinedPopulationByYearData}
-        populationData={totalPopulationData}
+        populationData={allPopulationData[selectedLabel]}
         prefecturesWithCheck={prefecturesWithCheck}
       />
     </div>

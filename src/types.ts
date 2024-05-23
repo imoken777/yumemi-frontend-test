@@ -17,18 +17,31 @@ type PopulationDataItem = {
   value: number;
 };
 
+export type MultilingualPopulationLabels = [
+  ['total', 'juvenile', 'workingAge', 'elderly'],
+  ['総人口', '年少人口', '生産年齢人口', '老年人口'],
+];
+export type EnPopulationLabelType = MultilingualPopulationLabels[0][number];
+
+export type JaPopulationLabelType = MultilingualPopulationLabels[0][number];
+
 export type PopulationAPIResponse = {
   message: string | null;
   result: {
     boundaryYear: number;
     data: {
-      label: '総人口' | '年少人口' | '生産年齢人口' | '老年人口';
+      label: JaPopulationLabelType;
       data: PopulationDataItem[];
     }[];
   };
 };
 
 export type PopulationData = PrefectureBase & {
-  boundaryYear: number;
   data: PopulationDataItem[];
+};
+
+export type AllPopulationData = {
+  boundaryYear: number;
+} & {
+  [key in EnPopulationLabelType]: PopulationData[];
 };
