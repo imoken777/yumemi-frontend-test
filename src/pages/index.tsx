@@ -5,8 +5,10 @@ import { useEffect, useState } from 'react';
 import LineGraphComponent from '../components/LineGraphComponent/LineGraph';
 import PrefectureCheckBoxes from '../components/PrefectureCheckBoxes/PrefectureCheckBoxes';
 import type {
+  AllPopulationData,
+  EnPopulationLabelType,
+  MultilingualPopulationLabels,
   PopulationAPIResponse,
-  PopulationData,
   PrefectureWithCheck,
   PrefecturesAPIResponse,
 } from '../types';
@@ -21,7 +23,13 @@ const resasAxiosInstance: AxiosInstance = axios.create({
 
 const Home: FC = () => {
   const [prefecturesWithCheck, setPrefecturesWithCheck] = useState<PrefectureWithCheck[]>([]);
-  const [totalPopulationData, setTotalPopulationData] = useState<PopulationData[]>([]);
+  const [allPopulationData, setAllPopulationData] = useState<AllPopulationData>({
+    boundaryYear: 0,
+    total: [],
+    juvenile: [],
+    workingAge: [],
+    elderly: [],
+  });
 
   const fetchPopulationData = async (prefCode: number, prefName: string) => {
     const populationEndPoint = '/api/v1/population/composition/perYear';
@@ -34,14 +42,22 @@ const Home: FC = () => {
       const response = await resasAxiosInstance.get<PopulationAPIResponse>(populationEndPoint, {
         params: parameters,
       });
-      const totalPopulationData: PopulationData = {
-        prefCode: parameters.prefCode,
-        prefName: prefName ?? '',
-        boundaryYear: response.data.result.boundaryYear,
-        data: response.data.result.data[0].data,
-      };
 
-      setTotalPopulationData((prevData) => [...prevData, totalPopulationData]);
+      const newPopulationData = response.data.result.data.map((data) => {
+        return {
+          prefCode: parameters.prefCode,
+          prefName: prefName ?? '',
+          data: data.data,
+        };
+      });
+
+      setAllPopulationData((prevData) => ({
+        boundaryYear: response.data.result.boundaryYear,
+        total: [...prevData.total, newPopulationData[0]],
+        juvenile: [...prevData.juvenile, newPopulationData[1]],
+        workingAge: [...prevData.workingAge, newPopulationData[2]],
+        elderly: [...prevData.elderly, newPopulationData[3]],
+      }));
     } catch (error) {
       console.error(error);
     }
