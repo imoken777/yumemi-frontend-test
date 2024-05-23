@@ -7,13 +7,13 @@ type LineGraphProps = {
     year: number;
   }[];
   populationData: PopulationData[];
-  prefectures: PrefectureWithCheck[];
+  prefecturesWithCheck: PrefectureWithCheck[];
 };
 
 const LineGraphComponent: React.FC<LineGraphProps> = ({
   combinedData,
   populationData,
-  prefectures,
+  prefecturesWithCheck: prefectures,
 }) => {
   const numberToColor = (number: number) => {
     const colors = [
