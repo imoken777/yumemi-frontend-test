@@ -1,8 +1,25 @@
+## 2024年 [株式会社ゆめみ](https://www.yumemi.co.jp/) [フロントエンドコーディング試験](https://yumemi.notion.site/0e9ef27b55704d7882aab55cc86c999d)
+
+[2weeksフロントエンドサマーインターン](https://hrmos.co/pages/yumemi/jobs/12345678901234567894)に応募した際の選考の過程で取り組んだもの
+
+**総開発時間:**
+
+**頂いた評価:**
+
+**評価基準の参考:** <https://note.yumemi.co.jp/n/ned7429b59556>
+
+### 【課題】
+
+**都道府県別の総人口推移グラフを表示するSPA(Single Page Application)を構築せよ**
+
+## 開発方法
+
 これは [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) でブートストラップされた [Next.js](https://nextjs.org/) プロジェクトです。
 
-## はじめに
+グラフの表示には[Recharts](https://recharts.org/en-US)を使用
 
 [Node.js](https://nodejs.org/en)(LTSを強く推奨)&npmのセットアップを完了したあと、開発用サーバーを起動します：
+
 ```bash
 npm run dev
 ```
@@ -11,19 +28,8 @@ npm run dev
 
 `pages/index.tsx`を修正することで、ページの編集を開始することができます。ファイルを編集すると、ページは自動的に更新されます。
 
-[APIルート](https://nextjs.org/docs/api-routes/introduction)は[http://localhost:3000/api/hello](http://localhost:3000/api/hello)でアクセスできます。
-このエンドポイントは `pages/api/hello.ts` で編集できます。
+## デプロイ
 
-`pages/api`ディレクトリは `/api/*` にマップされる。このディレクトリのファイルはReactページではなく、[API routes](https://nextjs.org/docs/api-routes/introduction)として扱われます。
-
-## 詳細はこちら
-
-Next.jsの詳細については、以下のリソースをご覧ください：
-
-- [Next.js Documentation](https://nextjs.org/docs) - Next.jsの機能とAPIについて学ぶことができます。
-- [Learn Next.js](https://nextjs.org/learn) - インタラクティブなNext.jsのチュートリアルです。
-
-[Next.jsのGitHubリポジトリ](https://github.com/vercel/next.js/) - フィードバックやコントリビューションを歓迎します！
-
-## Github Pagesへのデプロイ
-Github上のSettings -> Pages内のSourceをGitHub Actionsに切り替えるとWebページがデプロイされます。
+このアプリケーションは、GitHub Pagesにデプロイされています。
+デプロイされたWebサイトは、以下のURLから確認できます。
+<https://imoken777.github.io/yumemi-frontend-test/>
