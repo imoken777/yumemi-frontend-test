@@ -99,6 +99,14 @@ const Home: FC = () => {
     setSelectedLabel(matchingLabel);
   };
 
+  const resetCheckBoxes = () => {
+    const updatedPrefectures = prefecturesWithCheck.map((prefecture) => ({
+      ...prefecture,
+      isChecked: false,
+    }));
+    setPrefecturesWithCheck(updatedPrefectures);
+  };
+
   const fetchPrefectures = async () => {
     const prefecturesEndpoint = '/api/v1/prefectures';
 
@@ -125,6 +133,8 @@ const Home: FC = () => {
         prefectures={prefecturesWithCheck}
         handlePrefectureCheckbox={handlePrefectureCheckbox}
       />
+
+      <button onClick={resetCheckBoxes}>全てのチェックを外す</button>
 
       <PopulationLabelSelector
         selectedLabel={selectedLabel}
