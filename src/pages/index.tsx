@@ -142,6 +142,7 @@ const Home: FC = () => {
       />
 
       <LineGraphComponent
+        boundaryYear={allPopulationData.boundaryYear}
         populationData={allPopulationData[selectedLabel]}
         prefecturesWithCheck={prefecturesWithCheck}
       />
