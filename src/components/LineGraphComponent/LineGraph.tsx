@@ -4,6 +4,7 @@ import { CartesianGrid, Legend, Line, LineChart, Tooltip, XAxis, YAxis } from 'r
 import type { PopulationData, PrefectureWithCheck } from '../../types';
 
 type LineGraphProps = {
+  boundaryYear: number;
   populationData: PopulationData[];
   prefecturesWithCheck: PrefectureWithCheck[];
 };
@@ -35,6 +36,7 @@ const formatYAxis = (tickItem: number) => {
 };
 
 const LineGraphComponent: FC<LineGraphProps> = ({
+  boundaryYear: boundaryYear,
   populationData,
   prefecturesWithCheck: prefectures,
 }) => {
@@ -63,30 +65,50 @@ const LineGraphComponent: FC<LineGraphProps> = ({
 
   return (
     <LineChart
-      width={1500}
-      height={1000}
+      width={700}
+      height={500}
       data={combinedPopulationByYearData}
       margin={{ top: 5, right: 20, bottom: 5, left: 10 }}
     >
       <CartesianGrid stroke="#f5f5f5" />
-      <XAxis dataKey="year" />
+      <XAxis dataKey="year" allowDuplicatedCategory={false} />
       <YAxis tickFormatter={formatYAxis} />
-      <Tooltip />
+      <Tooltip payloadUniqBy={(payload) => payload.name} />
       <Legend />
       {populationData.map((popData, index) => {
         const isChecked = prefectures.some(
           (pref) => pref.prefCode === popData.prefCode && pref.isChecked,
         );
-        return isChecked ? (
-          <Line
-            key={popData.prefCode}
-            type="monotone"
-            dataKey={popData.prefName}
-            stroke={numberToColor(index)}
-            dot={false}
-            activeDot={{ r: 8 }}
-          />
-        ) : null;
+        if (!isChecked) return null;
+
+        //グラフを見た目上連続にするため、boundaryYearのデータは重複して描画する
+        const actualData = combinedPopulationByYearData.filter((d) => d.year <= boundaryYear);
+        const futureData = combinedPopulationByYearData.filter((d) => d.year >= boundaryYear);
+
+        return (
+          <>
+            <Line
+              type="monotone"
+              dataKey={popData.prefName}
+              stroke={numberToColor(index)}
+              dot={false}
+              activeDot={{ r: 8 }}
+              data={actualData}
+              animationDuration={500}
+            />
+            <Line
+              type="monotone"
+              dataKey={popData.prefName}
+              stroke={numberToColor(index)}
+              dot={false}
+              activeDot={{ r: 8 }}
+              strokeDasharray="5 5"
+              legendType="none"
+              data={futureData}
+              animationDuration={500}
+            />
+          </>
+        );
       })}
     </LineChart>
   );

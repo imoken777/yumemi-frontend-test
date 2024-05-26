@@ -22,6 +22,7 @@ const PrefectureCheckBoxes: FC<PrefectureCheckBoxesProps> = ({
                   type="checkbox"
                   name={prefecture.prefName}
                   onChange={handlePrefectureCheckbox}
+                  checked={prefecture.isChecked}
                 />
                 {prefecture.prefName}
               </label>

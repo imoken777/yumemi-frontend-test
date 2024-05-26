@@ -1,7 +1,7 @@
-interface PrefectureBase {
+type PrefectureBase = {
   prefCode: number;
   prefName: string;
-}
+};
 
 export type PrefecturesAPIResponse = {
   message: string | null;
