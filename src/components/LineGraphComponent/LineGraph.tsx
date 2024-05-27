@@ -21,15 +21,16 @@ type LineGraphProps = {
 const numberToColor = (number: number) => {
   const colors = [
     '#ff0000',
-    '#00ff00',
-    '#0000ff',
-    '#ffc000',
+    '#ff007f',
     '#ff00ff',
-    '#00dfff',
-    '#ff8000',
-    '#ff0080',
-    '#80ff00',
-    '#8000ff',
+    '#7f00ff',
+    '#0000ff',
+    '#007fff',
+    '#00ffff',
+    '#00ff7f',
+    '#7fff00',
+    '#ffff00',
+    '#ff7f00',
   ];
   return colors[number % colors.length];
 };
@@ -85,10 +86,18 @@ const LineGraphComponent: FC<LineGraphProps> = ({
             <rect x="0" y="0" width="100%" height="100%" />
           </clipPath>
         </defs>
-        <CartesianGrid stroke="#f5f5f5" />
-        <XAxis dataKey="year" allowDuplicatedCategory={false} />
-        <YAxis tickFormatter={formatYAxis} />
-        <Tooltip payloadUniqBy={(payload) => payload.name} />
+        <CartesianGrid stroke="var(--secondary-color)" />
+        <XAxis
+          dataKey="year"
+          allowDuplicatedCategory={false}
+          stroke="var(--secondary-color)"
+          dy={5}
+        />
+        <YAxis tickFormatter={formatYAxis} stroke="var(--secondary-color)" />
+        <Tooltip
+          payloadUniqBy={(payload) => payload.name}
+          contentStyle={{ backgroundColor: 'var(--primary-color)' }}
+        />
         <Legend />
         {populationData.map((popData, index) => {
           const isChecked = prefectures.some(
@@ -106,21 +115,25 @@ const LineGraphComponent: FC<LineGraphProps> = ({
                 type="monotone"
                 dataKey={popData.prefName}
                 stroke={numberToColor(index)}
+                strokeWidth={2}
                 dot={false}
                 activeDot={{ r: 8 }}
                 data={actualData}
                 animationDuration={500}
+                unit="人"
               />
               <Line
                 type="monotone"
                 dataKey={popData.prefName}
                 stroke={numberToColor(index)}
+                strokeWidth={2}
                 dot={false}
                 activeDot={{ r: 8 }}
                 strokeDasharray="5 5"
                 legendType="none"
                 data={futureData}
                 animationDuration={500}
+                unit="人"
               />
             </Fragment>
           );
