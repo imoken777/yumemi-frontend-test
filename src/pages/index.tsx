@@ -1,6 +1,7 @@
 import axios from 'axios';
+import type { GetStaticProps } from 'next';
 import type { FC } from 'react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import LineGraphComponent from '../components/LineGraphComponent/LineGraph';
 import PopulationLabelSelector from '../components/PopulationLabelSelector/PopulationLabelSelector';
 import PrefectureCheckBoxes from '../components/PrefectureCheckBoxes/PrefectureCheckBoxes';
@@ -19,8 +20,18 @@ const multilingualPopulationLabels: MultilingualPopulationLabels = [
   ['総人口', '年少人口', '生産年齢人口', '老年人口'],
 ];
 
-const Home: FC = () => {
-  const [prefecturesWithCheck, setPrefecturesWithCheck] = useState<PrefectureWithCheck[]>([]);
+const ORIGIN_URL = process.env.NEXT_PUBLIC_ORIGIN_URL;
+
+type PrefecturesWithCheckProps = {
+  prefecturesWithCheck: PrefectureWithCheck[];
+};
+
+const Home: FC<PrefecturesWithCheckProps> = ({
+  prefecturesWithCheck: initialPrefecturesWithCheck,
+}) => {
+  const [prefecturesWithCheck, setPrefecturesWithCheck] = useState<PrefectureWithCheck[]>(
+    initialPrefecturesWithCheck,
+  );
   const [allPopulationData, setAllPopulationData] = useState<AllPopulationData>({
     boundaryYear: 0,
     total: [],
@@ -31,15 +42,13 @@ const Home: FC = () => {
   const [selectedLabel, setSelectedLabel] = useState<EnPopulationLabelType>('total');
 
   const fetchPopulationData = async (prefCode: number, prefName: string) => {
-    const originURL = window.location.origin;
-
     const parameters = {
       prefCode: prefCode.toString(),
       cityCode: '-',
     };
 
     try {
-      const response = await axios.get<PopulationAPIResponse>(`${originURL}/api/populationData`, {
+      const response = await axios.get<PopulationAPIResponse>(`${ORIGIN_URL}/api/populationData`, {
         params: parameters,
       });
 
@@ -100,26 +109,6 @@ const Home: FC = () => {
     setPrefecturesWithCheck(updatedPrefectures);
   };
 
-  const fetchPrefectures = async () => {
-    const originURL = window.location.origin;
-
-    try {
-      const response = await axios.get<PrefecturesAPIResponse>(`${originURL}/api/prefectures`);
-      const prefData: PrefectureWithCheck[] = response.data.result.map((pref) => ({
-        prefCode: pref.prefCode,
-        prefName: pref.prefName,
-        isChecked: false,
-      }));
-      setPrefecturesWithCheck(prefData);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  useEffect(() => {
-    fetchPrefectures();
-  }, []);
-
   return (
     <div className={styles.container}>
       <PrefectureCheckBoxes
@@ -141,6 +130,32 @@ const Home: FC = () => {
       />
     </div>
   );
+};
+
+export const getStaticProps: GetStaticProps = async () => {
+  try {
+    const response = await axios.get<PrefecturesAPIResponse>(`${ORIGIN_URL}/api/prefectures`);
+    const prefData: PrefectureWithCheck[] = response.data.result.map((pref) => ({
+      prefCode: pref.prefCode,
+      prefName: pref.prefName,
+      isChecked: false,
+    }));
+
+    return {
+      props: {
+        prefecturesWithCheck: prefData,
+      },
+      revalidate: 60,
+    };
+  } catch (error) {
+    console.error('Error', error);
+    return {
+      props: {
+        prefecturesWithCheck: [],
+      },
+      revalidate: 30,
+    };
+  }
 };
 
 export default Home;
