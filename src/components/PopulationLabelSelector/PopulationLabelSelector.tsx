@@ -1,5 +1,6 @@
 import type { FC } from 'react';
 import type { EnPopulationLabelType, MultilingualPopulationLabels } from '../../types';
+import styles from './PopulationLabelSelector.module.css';
 
 type PopulationLabelSelectProps = {
   selectedLabel: EnPopulationLabelType;
@@ -16,13 +17,21 @@ const PopulationLabelSelector: FC<PopulationLabelSelectProps> = ({
   handlePopulationLabelChange,
 }) => {
   return (
-    <select onChange={handlePopulationLabelChange} value={selectedLabel}>
-      {multilingualPopulationLabels[0].map((label, index) => (
-        <option key={label} value={label}>
-          {multilingualPopulationLabels[1][index]}
-        </option>
-      ))}
-    </select>
+    <div className={styles.selectContainer}>
+      <select
+        onChange={handlePopulationLabelChange}
+        value={selectedLabel}
+        className={styles.select}
+        title="Select population label"
+      >
+        {multilingualPopulationLabels[0].map((label, index) => (
+          <option key={label} value={label} className={styles.selectOption}>
+            {multilingualPopulationLabels[1][index]}
+          </option>
+        ))}
+      </select>
+      <div className={styles.selectIcon}>▼</div>
+    </div>
   );
 };
 

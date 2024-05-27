@@ -16,16 +16,15 @@ const PrefectureCheckBoxes: FC<PrefectureCheckBoxesProps> = ({
       {prefectures.length > 0 && (
         <div className={styles.prefecturesContainer}>
           {prefectures.map((prefecture) => (
-            <div key={prefecture.prefCode}>
-              <label>
-                <input
-                  type="checkbox"
-                  name={prefecture.prefName}
-                  onChange={handlePrefectureCheckbox}
-                  checked={prefecture.isChecked}
-                />
-                {prefecture.prefName}
-              </label>
+            <div key={prefecture.prefCode} className={styles.checkboxItem}>
+              <input
+                id={`checkbox-${prefecture.prefCode}`}
+                type="checkbox"
+                name={prefecture.prefName}
+                onChange={handlePrefectureCheckbox}
+                checked={prefecture.isChecked}
+              />
+              <label htmlFor={`checkbox-${prefecture.prefCode}`}>{prefecture.prefName}</label>
             </div>
           ))}
         </div>
