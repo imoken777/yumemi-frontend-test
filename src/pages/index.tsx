@@ -111,23 +111,36 @@ const Home: FC<PrefecturesWithCheckProps> = ({
 
   return (
     <div className={styles.container}>
-      <PrefectureCheckBoxes
-        prefectures={prefecturesWithCheck}
-        handlePrefectureCheckbox={handlePrefectureCheckbox}
-      />
+      <header className={styles.header}>
+        <h1>都道府県別人口推移グラフ</h1>
+      </header>
 
-      <button onClick={resetCheckBoxes}>全てのチェックを外す</button>
+      <main className={styles.main}>
+        <section className={styles.checkboxSection}>
+          <PrefectureCheckBoxes
+            prefectures={prefecturesWithCheck}
+            handlePrefectureCheckbox={handlePrefectureCheckbox}
+          />
+          <button className={styles.resetButton} onClick={resetCheckBoxes}>
+            全てのチェックを外す
+          </button>
+        </section>
 
-      <PopulationLabelSelector
-        selectedLabel={selectedLabel}
-        handlePopulationLabelChange={handlePopulationLabelChange}
-      />
+        <section className={styles.labelSelectorSection}>
+          <PopulationLabelSelector
+            selectedLabel={selectedLabel}
+            handlePopulationLabelChange={handlePopulationLabelChange}
+          />
+        </section>
 
-      <LineGraphComponent
-        boundaryYear={allPopulationData.boundaryYear}
-        populationData={allPopulationData[selectedLabel]}
-        prefecturesWithCheck={prefecturesWithCheck}
-      />
+        <section className={styles.graphSection}>
+          <LineGraphComponent
+            boundaryYear={allPopulationData.boundaryYear}
+            populationData={allPopulationData[selectedLabel]}
+            prefecturesWithCheck={prefecturesWithCheck}
+          />
+        </section>
+      </main>
     </div>
   );
 };
