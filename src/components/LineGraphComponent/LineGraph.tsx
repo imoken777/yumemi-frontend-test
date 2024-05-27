@@ -1,6 +1,15 @@
 import type { FC } from 'react';
-import { useMemo } from 'react';
-import { CartesianGrid, Legend, Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts';
+import { Fragment, useMemo } from 'react';
+import {
+  CartesianGrid,
+  Legend,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts';
 import type { PopulationData, PrefectureWithCheck } from '../../types';
 
 type LineGraphProps = {
@@ -64,53 +73,60 @@ const LineGraphComponent: FC<LineGraphProps> = ({
   }, [populationData]);
 
   return (
-    <LineChart
-      width={700}
-      height={500}
-      data={combinedPopulationByYearData}
-      margin={{ top: 5, right: 20, bottom: 5, left: 10 }}
-    >
-      <CartesianGrid stroke="#f5f5f5" />
-      <XAxis dataKey="year" allowDuplicatedCategory={false} />
-      <YAxis tickFormatter={formatYAxis} />
-      <Tooltip payloadUniqBy={(payload) => payload.name} />
-      <Legend />
-      {populationData.map((popData, index) => {
-        const isChecked = prefectures.some(
-          (pref) => pref.prefCode === popData.prefCode && pref.isChecked,
-        );
-        if (!isChecked) return null;
+    <ResponsiveContainer width="100%" height={500}>
+      <LineChart
+        width={700}
+        height={500}
+        data={combinedPopulationByYearData}
+        margin={{ top: 5, right: 20, bottom: 5, left: 10 }}
+      >
+        <defs>
+          <clipPath id="recharts-clip">
+            <rect x="0" y="0" width="100%" height="100%" />
+          </clipPath>
+        </defs>
+        <CartesianGrid stroke="#f5f5f5" />
+        <XAxis dataKey="year" allowDuplicatedCategory={false} />
+        <YAxis tickFormatter={formatYAxis} />
+        <Tooltip payloadUniqBy={(payload) => payload.name} />
+        <Legend />
+        {populationData.map((popData, index) => {
+          const isChecked = prefectures.some(
+            (pref) => pref.prefCode === popData.prefCode && pref.isChecked,
+          );
+          if (!isChecked) return null;
 
-        //グラフを見た目上連続にするため、boundaryYearのデータは重複して描画する
-        const actualData = combinedPopulationByYearData.filter((d) => d.year <= boundaryYear);
-        const futureData = combinedPopulationByYearData.filter((d) => d.year >= boundaryYear);
+          //グラフを見た目上連続にするため、boundaryYearのデータは重複して描画する
+          const actualData = combinedPopulationByYearData.filter((d) => d.year <= boundaryYear);
+          const futureData = combinedPopulationByYearData.filter((d) => d.year >= boundaryYear);
 
-        return (
-          <>
-            <Line
-              type="monotone"
-              dataKey={popData.prefName}
-              stroke={numberToColor(index)}
-              dot={false}
-              activeDot={{ r: 8 }}
-              data={actualData}
-              animationDuration={500}
-            />
-            <Line
-              type="monotone"
-              dataKey={popData.prefName}
-              stroke={numberToColor(index)}
-              dot={false}
-              activeDot={{ r: 8 }}
-              strokeDasharray="5 5"
-              legendType="none"
-              data={futureData}
-              animationDuration={500}
-            />
-          </>
-        );
-      })}
-    </LineChart>
+          return (
+            <Fragment key={popData.prefCode}>
+              <Line
+                type="monotone"
+                dataKey={popData.prefName}
+                stroke={numberToColor(index)}
+                dot={false}
+                activeDot={{ r: 8 }}
+                data={actualData}
+                animationDuration={500}
+              />
+              <Line
+                type="monotone"
+                dataKey={popData.prefName}
+                stroke={numberToColor(index)}
+                dot={false}
+                activeDot={{ r: 8 }}
+                strokeDasharray="5 5"
+                legendType="none"
+                data={futureData}
+                animationDuration={500}
+              />
+            </Fragment>
+          );
+        })}
+      </LineChart>
+    </ResponsiveContainer>
   );
 };
 
