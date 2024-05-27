@@ -1,3 +1,8 @@
+export type ErrorAPIResponse = {
+  message: string;
+  issues?: string[];
+};
+
 type PrefectureBase = {
   prefCode: number;
   prefName: string;
