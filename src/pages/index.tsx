@@ -1,4 +1,3 @@
-import type { AxiosInstance } from 'axios';
 import axios from 'axios';
 import type { FC } from 'react';
 import { useEffect, useState } from 'react';
@@ -14,13 +13,6 @@ import type {
   PrefecturesAPIResponse,
 } from '../types';
 import styles from './index.module.css';
-
-const resasAxiosInstance: AxiosInstance = axios.create({
-  baseURL: 'https://opendata.resas-portal.go.jp',
-  headers: {
-    'X-API-KEY': process.env.NEXT_PUBLIC_RESAS_API_KEY,
-  },
-});
 
 const multilingualPopulationLabels: MultilingualPopulationLabels = [
   ['total', 'juvenile', 'workingAge', 'elderly'],
@@ -39,21 +31,22 @@ const Home: FC = () => {
   const [selectedLabel, setSelectedLabel] = useState<EnPopulationLabelType>('total');
 
   const fetchPopulationData = async (prefCode: number, prefName: string) => {
-    const populationEndPoint = '/api/v1/population/composition/perYear';
+    const originURL = window.location.origin;
+
     const parameters = {
-      prefCode,
+      prefCode: prefCode.toString(),
       cityCode: '-',
     };
 
     try {
-      const response = await resasAxiosInstance.get<PopulationAPIResponse>(populationEndPoint, {
+      const response = await axios.get<PopulationAPIResponse>(`${originURL}/api/populationData`, {
         params: parameters,
       });
 
       const newPopulationData = response.data.result.data.map((data) => {
         return {
-          prefCode: parameters.prefCode,
-          prefName: prefName ?? '',
+          prefCode,
+          prefName,
           data: data.data,
         };
       });
@@ -108,10 +101,10 @@ const Home: FC = () => {
   };
 
   const fetchPrefectures = async () => {
-    const prefecturesEndpoint = '/api/v1/prefectures';
+    const originURL = window.location.origin;
 
     try {
-      const response = await resasAxiosInstance.get<PrefecturesAPIResponse>(prefecturesEndpoint);
+      const response = await axios.get<PrefecturesAPIResponse>(`${originURL}/api/prefectures`);
       const prefData: PrefectureWithCheck[] = response.data.result.map((pref) => ({
         prefCode: pref.prefCode,
         prefName: pref.prefName,
