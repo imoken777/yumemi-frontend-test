@@ -5,11 +5,10 @@ import { useState } from 'react';
 import LineGraphComponent from '../components/LineGraphComponent/LineGraph';
 import PopulationLabelSelector from '../components/PopulationLabelSelector/PopulationLabelSelector';
 import PrefectureCheckBoxes from '../components/PrefectureCheckBoxes/PrefectureCheckBoxes';
+import { usePopulationData } from '../hooks/usePopulationData';
 import type {
-  AllPopulationData,
   EnPopulationLabelType,
   MultilingualPopulationLabels,
-  PopulationAPIResponse,
   PrefectureWithCheck,
   PrefecturesAPIResponse,
 } from '../types';
@@ -28,45 +27,8 @@ const Home: FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
   const [prefecturesWithCheck, setPrefecturesWithCheck] = useState<PrefectureWithCheck[]>(
     initialPrefecturesWithCheck,
   );
-  const [allPopulationData, setAllPopulationData] = useState<AllPopulationData>({
-    boundaryYear: 0,
-    total: [],
-    juvenile: [],
-    workingAge: [],
-    elderly: [],
-  });
+  const { allPopulationData, getPopulationData } = usePopulationData();
   const [selectedLabel, setSelectedLabel] = useState<EnPopulationLabelType>('total');
-
-  const fetchPopulationData = async (prefCode: number, prefName: string) => {
-    const parameters = {
-      prefCode: prefCode.toString(),
-      cityCode: '-',
-    };
-
-    try {
-      const response = await axios.get<PopulationAPIResponse>(`${ORIGIN_URL}/api/populationData`, {
-        params: parameters,
-      });
-
-      const newPopulationData = response.data.result.data.map((data) => {
-        return {
-          prefCode,
-          prefName,
-          data: data.data,
-        };
-      });
-
-      setAllPopulationData((prevData) => ({
-        boundaryYear: response.data.result.boundaryYear,
-        total: [...prevData.total, newPopulationData[0]],
-        juvenile: [...prevData.juvenile, newPopulationData[1]],
-        workingAge: [...prevData.workingAge, newPopulationData[2]],
-        elderly: [...prevData.elderly, newPopulationData[3]],
-      }));
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   const handlePrefectureCheckbox = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = event.target;
@@ -85,7 +47,7 @@ const Home: FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
       );
 
       if (selectedPrefecture && notFetchedPrefectures) {
-        await fetchPopulationData(selectedPrefecture.prefCode, selectedPrefecture.prefName);
+        await getPopulationData(selectedPrefecture.prefCode, selectedPrefecture.prefName);
       }
     }
   };
