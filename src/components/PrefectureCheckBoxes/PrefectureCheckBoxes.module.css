@@ -1,6 +1,6 @@
 .prefecturesContainer {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   gap: 10px;
   padding: 20px;
   background-color: var(--box-background);
@@ -12,7 +12,6 @@
   display: flex;
   gap: 10px;
   align-items: center;
-  width: calc(13.333% - 5px); /* 7列 */
 }
 
 .checkboxItem input[type='checkbox'] {
@@ -45,34 +44,5 @@
 .checkboxItem label {
   font-size: 0.9em;
   color: var(--secondary-color);
-}
-
-@media (width <= 1200px) {
-  .checkboxItem {
-    width: calc(20% - 8px); /* 5列 */
-  }
-}
-
-@media (width <= 992px) {
-  .checkboxItem {
-    width: calc(25% - 8px); /* 4列 */
-  }
-}
-
-@media (width <= 768px) {
-  .checkboxItem {
-    width: calc(33.333% - 10px); /* 3列 */
-  }
-}
-
-@media (width <= 410px) {
-  .checkboxItem {
-    width: calc(50% - 10px); /* 2列 */
-  }
-}
-
-@media (width <= 275px) {
-  .checkboxItem {
-    width: 100%; /* 1列 */
-  }
+  cursor: pointer;
 }

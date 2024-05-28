@@ -46,7 +46,7 @@ export type PopulationData = PrefectureBase & {
 };
 
 export type AllPopulationData = {
-  boundaryYear: number;
+  boundaryYear: PopulationAPIResponse['result']['boundaryYear'];
 } & {
   [key in EnPopulationLabelType]: PopulationData[];
 };
