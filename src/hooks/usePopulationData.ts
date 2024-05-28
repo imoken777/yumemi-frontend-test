@@ -75,5 +75,5 @@ export const usePopulationData = () => {
     }
   }, []);
 
-  return { allPopulationData, getPopulationData: updatePopulationData };
+  return { allPopulationData, updatePopulationData };
 };

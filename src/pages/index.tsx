@@ -27,7 +27,7 @@ const Home: FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
   const [prefecturesWithCheck, setPrefecturesWithCheck] = useState<PrefectureWithCheck[]>(
     initialPrefecturesWithCheck,
   );
-  const { allPopulationData, getPopulationData } = usePopulationData();
+  const { allPopulationData, updatePopulationData } = usePopulationData();
   const [selectedLabel, setSelectedLabel] = useState<EnPopulationLabelType>('total');
 
   const handlePrefectureCheckbox = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,7 +47,7 @@ const Home: FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
       );
 
       if (selectedPrefecture && notFetchedPrefectures) {
-        await getPopulationData(selectedPrefecture.prefCode, selectedPrefecture.prefName);
+        await updatePopulationData(selectedPrefecture.prefCode, selectedPrefecture.prefName);
       }
     }
   };
