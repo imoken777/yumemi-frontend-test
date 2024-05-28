@@ -45,6 +45,7 @@
 .checkboxItem label {
   font-size: 0.9em;
   color: var(--secondary-color);
+  cursor: pointer;
 }
 
 @media (width <= 1200px) {

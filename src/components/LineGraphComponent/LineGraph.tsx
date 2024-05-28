@@ -21,16 +21,16 @@ type LineGraphProps = {
 const numberToColor = (number: number) => {
   const colors = [
     '#ff0000',
-    '#ff007f',
-    '#ff00ff',
-    '#7f00ff',
-    '#0000ff',
     '#007fff',
+    '#ff00ff',
+    '#ff007f',
     '#00ffff',
-    '#00ff7f',
-    '#7fff00',
     '#ffff00',
+    '#7f00ff',
+    '#00ff7f',
+    '#0000ff',
     '#ff7f00',
+    '#7fff00',
   ];
   return colors[number % colors.length];
 };
