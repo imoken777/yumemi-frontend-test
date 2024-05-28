@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { GetStaticProps } from 'next';
+import type { GetStaticProps, InferGetStaticPropsType } from 'next';
 import type { FC } from 'react';
 import { useState } from 'react';
 import LineGraphComponent from '../components/LineGraphComponent/LineGraph';
@@ -22,11 +22,7 @@ const multilingualPopulationLabels: MultilingualPopulationLabels = [
 
 const ORIGIN_URL = process.env.NEXT_PUBLIC_ORIGIN_URL;
 
-type PrefecturesWithCheckProps = {
-  prefecturesWithCheck: PrefectureWithCheck[];
-};
-
-const Home: FC<PrefecturesWithCheckProps> = ({
+const Home: FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
   prefecturesWithCheck: initialPrefecturesWithCheck,
 }) => {
   const [prefecturesWithCheck, setPrefecturesWithCheck] = useState<PrefectureWithCheck[]>(
@@ -145,7 +141,9 @@ const Home: FC<PrefecturesWithCheckProps> = ({
   );
 };
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getStaticProps: GetStaticProps<{
+  prefecturesWithCheck: PrefectureWithCheck[];
+}> = async () => {
   try {
     const response = await axios.get<PrefecturesAPIResponse>(`${ORIGIN_URL}/api/prefectures`);
     const prefData: PrefectureWithCheck[] = response.data.result.map((pref) => ({

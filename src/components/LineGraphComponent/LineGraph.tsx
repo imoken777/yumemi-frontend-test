@@ -10,10 +10,10 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import type { PopulationData, PrefectureWithCheck } from '../../types';
+import type { AllPopulationData, PopulationData, PrefectureWithCheck } from '../../types';
 
 type LineGraphProps = {
-  boundaryYear: number;
+  boundaryYear: AllPopulationData['boundaryYear'];
   populationData: PopulationData[];
   prefecturesWithCheck: PrefectureWithCheck[];
 };
@@ -73,6 +73,10 @@ const LineGraphComponent: FC<LineGraphProps> = ({
     return Object.values(yearMap);
   }, [populationData]);
 
+  //グラフを見た目上連続にするため、boundaryYearのデータは重複して描画する
+  const actualData = combinedPopulationByYearData.filter((d) => d.year <= boundaryYear);
+  const futureData = combinedPopulationByYearData.filter((d) => d.year >= boundaryYear);
+
   return (
     <ResponsiveContainer width="100%" height={500}>
       <LineChart
@@ -104,10 +108,6 @@ const LineGraphComponent: FC<LineGraphProps> = ({
             (pref) => pref.prefCode === popData.prefCode && pref.isChecked,
           );
           if (!isChecked) return null;
-
-          //グラフを見た目上連続にするため、boundaryYearのデータは重複して描画する
-          const actualData = combinedPopulationByYearData.filter((d) => d.year <= boundaryYear);
-          const futureData = combinedPopulationByYearData.filter((d) => d.year >= boundaryYear);
 
           return (
             <Fragment key={popData.prefCode}>
