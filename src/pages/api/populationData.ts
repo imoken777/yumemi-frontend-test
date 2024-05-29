@@ -1,8 +1,9 @@
 import type { NextApiHandler, NextApiRequest, NextApiResponse } from 'next';
 import { z } from 'zod';
-import type { ErrorAPIResponse, PopulationAPIResponse } from '../../types';
-import { resasAxiosInstance } from '../../utils/resasAxiosInstance';
-import { withZod } from '../../utils/withZod';
+import { resasAxiosInstance } from '../../lib/resasAxiosInstance';
+import { withZod } from '../../lib/withZod';
+import type { ErrorAPIResponse } from '../../types/ErrorTypes';
+import type { PopulationAPIResponse } from '../../types/PopulationTypes';
 
 const querySchema = z
   .object({

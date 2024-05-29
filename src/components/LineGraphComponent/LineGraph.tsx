@@ -10,39 +10,14 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import type { AllPopulationData, PopulationData, PrefectureWithCheck } from '../../types';
+import type { AllPopulationData, PopulationData } from '../../types/PopulationTypes';
+import type { PrefectureWithCheck } from '../../types/PrefectureTypes';
+import { convertToJapaneseUnits, numberToColor } from '../../utils/graphCustom';
 
 type LineGraphProps = {
   boundaryYear: AllPopulationData['boundaryYear'];
   populationData: PopulationData[];
   prefecturesWithCheck: PrefectureWithCheck[];
-};
-
-const numberToColor = (number: number) => {
-  const colors = [
-    '#ff0000',
-    '#007fff',
-    '#ff00ff',
-    '#ff007f',
-    '#00ffff',
-    '#ffff00',
-    '#7f00ff',
-    '#00ff7f',
-    '#0000ff',
-    '#ff7f00',
-    '#7fff00',
-  ];
-  return colors[number % colors.length];
-};
-
-const formatYAxis = (tickItem: number) => {
-  if (tickItem >= 100000000) {
-    return `${(tickItem / 100000000).toFixed(0)}億`;
-  } else if (tickItem >= 10000) {
-    return `${(tickItem / 10000).toFixed(0)}万`;
-  } else {
-    return tickItem.toString();
-  }
 };
 
 const LineGraphComponent: FC<LineGraphProps> = ({
@@ -97,7 +72,7 @@ const LineGraphComponent: FC<LineGraphProps> = ({
           stroke="var(--secondary-color)"
           dy={5}
         />
-        <YAxis tickFormatter={formatYAxis} stroke="var(--secondary-color)" />
+        <YAxis tickFormatter={convertToJapaneseUnits} stroke="var(--secondary-color)" />
         <Tooltip
           payloadUniqBy={(payload) => payload.name}
           contentStyle={{ backgroundColor: 'var(--primary-color)' }}

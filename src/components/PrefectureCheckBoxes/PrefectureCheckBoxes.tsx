@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import type { PrefectureWithCheck } from '../../types';
+import type { PrefectureWithCheck } from '../../types/PrefectureTypes';
 import styles from './PrefectureCheckBoxes.module.css';
 
 type PrefectureCheckBoxesProps = {
