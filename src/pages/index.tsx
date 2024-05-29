@@ -6,6 +6,7 @@ import PrefectureCheckBoxes from '../components/PrefectureCheckBoxes/PrefectureC
 import { usePopulationData } from '../hooks/usePopulationData';
 import { usePopulationLabel } from '../hooks/usePopulationLabel';
 import { usePrefectureCheck } from '../hooks/usePrefectureCheck';
+import { fetchPrefectureData } from '../lib/fetchPrefectureData';
 import type { PrefectureWithCheck } from '../types';
 import styles from './index.module.css';
 
@@ -14,7 +15,7 @@ const multilingualPopulationLabels: MultilingualPopulationLabels = [
   ['総人口', '年少人口', '生産年齢人口', '老年人口'],
 ];
 const Home: FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
-  prefecturesWithCheck: initialPrefecturesWithCheck,
+  prefecturesWithCheck: initialPrefecturesWithCheck = [],
 }) => {
   const { allPopulationData, updatePopulationData } = usePopulationData();
 
@@ -67,13 +68,10 @@ export const getStaticProps: GetStaticProps<{
   prefecturesWithCheck: PrefectureWithCheck[];
 }> = async () => {
   try {
-    const response = await axios.get<PrefecturesAPIResponse>(`${ORIGIN_URL}/api/prefectures`);
-    const prefData: PrefectureWithCheck[] = response.data.result.map((pref) => ({
-      prefCode: pref.prefCode,
-      prefName: pref.prefName,
-      isChecked: false,
-    }));
-
+    const prefData = await fetchPrefectureData();
+    if (prefData === null) {
+      throw new Error('Failed to fetch prefecture data');
+    }
     return {
       props: {
         prefecturesWithCheck: prefData,
@@ -90,5 +88,4 @@ export const getStaticProps: GetStaticProps<{
     };
   }
 };
-
 export default Home;
