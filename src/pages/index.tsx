@@ -10,10 +10,6 @@ import { fetchPrefectureData } from '../lib/fetchPrefectureData';
 import type { PrefectureWithCheck } from '../types';
 import styles from './index.module.css';
 
-const multilingualPopulationLabels: MultilingualPopulationLabels = [
-  ['total', 'juvenile', 'workingAge', 'elderly'],
-  ['総人口', '年少人口', '生産年齢人口', '老年人口'],
-];
 const Home: FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
   prefecturesWithCheck: initialPrefecturesWithCheck = [],
 }) => {
@@ -48,6 +44,7 @@ const Home: FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
         <section className={styles.labelSelectorSection}>
           <PopulationLabelSelector
             selectedLabel={selectedLabel}
+            multilingualPopulationLabels={multilingualPopulationLabels}
             handlePopulationLabelChange={handlePopulationLabelChange}
           />
         </section>

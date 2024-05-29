@@ -4,16 +4,13 @@ import styles from './PopulationLabelSelector.module.css';
 
 type PopulationLabelSelectProps = {
   selectedLabel: EnPopulationLabelType;
+  multilingualPopulationLabels: MultilingualPopulationLabels;
   handlePopulationLabelChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
 };
 
-const multilingualPopulationLabels: MultilingualPopulationLabels = [
-  ['total', 'juvenile', 'workingAge', 'elderly'],
-  ['総人口', '年少人口', '生産年齢人口', '老年人口'],
-];
-
 const PopulationLabelSelector: FC<PopulationLabelSelectProps> = ({
   selectedLabel,
+  multilingualPopulationLabels,
   handlePopulationLabelChange,
 }) => {
   return (
