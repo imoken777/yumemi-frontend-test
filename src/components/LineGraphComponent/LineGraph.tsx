@@ -10,7 +10,8 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import type { AllPopulationData, PopulationData, PrefectureWithCheck } from '../../types';
+import type { AllPopulationData, PopulationData } from '../../types/PopulationTypes';
+import type { PrefectureWithCheck } from '../../types/PrefectureTypes';
 import { convertToJapaneseUnits, numberToColor } from '../../utils/graphCustom';
 
 type LineGraphProps = {

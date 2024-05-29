@@ -1,5 +1,8 @@
 import type { FC } from 'react';
-import type { EnPopulationLabelType, MultilingualPopulationLabels } from '../../types';
+import type {
+  EnPopulationLabelType,
+  MultilingualPopulationLabels,
+} from '../../types/PopulationTypes';
 import styles from './PopulationLabelSelector.module.css';
 
 type PopulationLabelSelectProps = {

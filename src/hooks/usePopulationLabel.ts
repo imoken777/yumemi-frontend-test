@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { EnPopulationLabelType, MultilingualPopulationLabels } from '../types';
+import type { EnPopulationLabelType, MultilingualPopulationLabels } from '../types/PopulationTypes';
 
 const multilingualPopulationLabels: MultilingualPopulationLabels = [
   ['total', 'juvenile', 'workingAge', 'elderly'],

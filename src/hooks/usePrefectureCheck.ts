@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import type { AllPopulationData, PrefectureWithCheck } from '../types';
+import type { AllPopulationData } from '../types/PopulationTypes';
+import type { PrefectureWithCheck } from '../types/PrefectureTypes';
 
 export const usePrefectureCheck = (
   initialPrefecturesWithCheck: PrefectureWithCheck[],

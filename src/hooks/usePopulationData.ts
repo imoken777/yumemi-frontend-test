@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import { fetchPopulationData } from '../lib/fetchPopulationData';
-import type { AllPopulationData } from '../types';
+import type { AllPopulationData } from '../types/PopulationTypes';
 
 export const usePopulationData = () => {
   const [allPopulationData, setAllPopulationData] = useState<AllPopulationData>({

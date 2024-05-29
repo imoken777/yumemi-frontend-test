@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { resasAxiosInstance } from '../../lib/resasAxiosInstance';
-import type { ErrorAPIResponse, PrefecturesAPIResponse } from '../../types';
+import type { ErrorAPIResponse } from '../../types/ErrorTypes';
+import type { PrefecturesAPIResponse } from '../../types/PrefectureTypes';
 
 export default async (
   req: NextApiRequest,

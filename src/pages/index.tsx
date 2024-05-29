@@ -7,7 +7,7 @@ import { usePopulationData } from '../hooks/usePopulationData';
 import { usePopulationLabel } from '../hooks/usePopulationLabel';
 import { usePrefectureCheck } from '../hooks/usePrefectureCheck';
 import { fetchPrefectureData } from '../lib/fetchPrefectureData';
-import type { PrefectureWithCheck } from '../types';
+import type { PrefectureWithCheck } from '../types/PrefectureTypes';
 import styles from './index.module.css';
 
 const Home: FC<InferGetStaticPropsType<typeof getStaticProps>> = ({

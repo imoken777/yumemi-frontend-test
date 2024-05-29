@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { PrefecturesAPIResponse, PrefectureWithCheck } from '../types';
+import type { PrefectureWithCheck, PrefecturesAPIResponse } from '../types/PrefectureTypes';
 
 const ORIGIN_URL = process.env.NEXT_PUBLIC_ORIGIN_URL;
 

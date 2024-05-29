@@ -1,5 +1,9 @@
 import axios from 'axios';
-import type { AllPopulationData, PopulationAPIResponse, PopulationData } from '../types';
+import type {
+  AllPopulationData,
+  PopulationAPIResponse,
+  PopulationData,
+} from '../types/PopulationTypes';
 
 const ORIGIN_URL = process.env.NEXT_PUBLIC_ORIGIN_URL;
 
