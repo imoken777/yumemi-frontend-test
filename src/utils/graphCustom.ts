@@ -1,3 +1,28 @@
+import type { PopulationData } from '../types/PopulationTypes';
+
+export const combinePopulationByYearData = (populationData: PopulationData[]) => {
+  const yearMap: { [key: number]: { year: number; [key: string]: number | null } } = {};
+
+  populationData.forEach((popData) => {
+    popData.data.forEach((entry) => {
+      if (yearMap[entry.year] === undefined) {
+        yearMap[entry.year] = { year: entry.year };
+      }
+      yearMap[entry.year][popData.prefName] = entry.value;
+    });
+  });
+
+  Object.values(yearMap).forEach((yearData) => {
+    populationData.forEach((popData) => {
+      if (!(popData.prefName in yearData)) {
+        yearData[popData.prefName] = null;
+      }
+    });
+  });
+
+  return Object.values(yearMap);
+};
+
 export const numberToColor = (number: number) => {
   const colors = [
     '#ff0000',

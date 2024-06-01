@@ -1,7 +1,7 @@
 import type { GetStaticProps, InferGetStaticPropsType } from 'next';
 import type { FC } from 'react';
-import LineGraphComponent from '../components/LineGraphComponent/LineGraph';
 import PopulationLabelSelector from '../components/PopulationLabelSelector/PopulationLabelSelector';
+import PopulationLineGraph from '../components/PopulationLineGraph/PopulationLineGraph';
 import PrefectureCheckBoxes from '../components/PrefectureCheckBoxes/PrefectureCheckBoxes';
 import { usePopulationData } from '../hooks/usePopulationData';
 import { usePopulationLabel } from '../hooks/usePopulationLabel';
@@ -50,7 +50,7 @@ const Home: FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
         </section>
 
         <section className={styles.graphSection}>
-          <LineGraphComponent
+          <PopulationLineGraph
             boundaryYear={allPopulationData.boundaryYear}
             populationData={allPopulationData[selectedLabel]}
             prefecturesWithCheck={prefecturesWithCheck}

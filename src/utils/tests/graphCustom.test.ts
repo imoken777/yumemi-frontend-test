@@ -1,4 +1,64 @@
-import { convertToJapaneseUnits, numberToColor } from '../graphCustom';
+import type { PopulationData } from '../../types/PopulationTypes';
+import { combinePopulationByYearData, convertToJapaneseUnits, numberToColor } from '../graphCustom';
+
+describe('combinePopulationByYearData', () => {
+  test('should combine population data by year correctly', () => {
+    const populationData: PopulationData[] = [
+      {
+        prefName: '北海道',
+        prefCode: 1,
+        data: [
+          { year: 2000, value: 5600000 },
+          { year: 2005, value: 5500000 },
+        ],
+      },
+      {
+        prefName: '青森県',
+        prefCode: 2,
+        data: [
+          { year: 2000, value: 1400000 },
+          { year: 2005, value: 1350000 },
+        ],
+      },
+    ];
+
+    const expected = [
+      { year: 2000, 北海道: 5600000, 青森県: 1400000 },
+      { year: 2005, 北海道: 5500000, 青森県: 1350000 },
+    ];
+
+    const result = combinePopulationByYearData(populationData);
+
+    expect(result).toEqual(expected);
+  });
+
+  test('should handle missing years for some prefectures', () => {
+    const populationData: PopulationData[] = [
+      {
+        prefName: '北海道',
+        prefCode: 1,
+        data: [{ year: 2000, value: 5600000 }],
+      },
+      {
+        prefName: '青森県',
+        prefCode: 2,
+        data: [
+          { year: 2000, value: 1400000 },
+          { year: 2005, value: 1350000 },
+        ],
+      },
+    ];
+
+    const expected = [
+      { year: 2000, 北海道: 5600000, 青森県: 1400000 },
+      { year: 2005, 北海道: null, 青森県: 1350000 },
+    ];
+
+    const result = combinePopulationByYearData(populationData);
+
+    expect(result).toEqual(expected);
+  });
+});
 
 describe('graphCustom', () => {
   describe('numberToColor', () => {
