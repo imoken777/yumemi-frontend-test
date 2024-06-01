@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { Fragment, useMemo } from 'react';
+import { Fragment } from 'react';
 import {
   CartesianGrid,
   Legend,
@@ -12,7 +12,11 @@ import {
 } from 'recharts';
 import type { AllPopulationData, PopulationData } from '../../types/PopulationTypes';
 import type { PrefectureWithCheck } from '../../types/PrefectureTypes';
-import { convertToJapaneseUnits, numberToColor } from '../../utils/graphCustom';
+import {
+  combinePopulationByYearData,
+  convertToJapaneseUnits,
+  numberToColor,
+} from '../../utils/graphCustom';
 
 type LineGraphProps = {
   boundaryYear: AllPopulationData['boundaryYear'];
@@ -25,28 +29,7 @@ const LineGraphComponent: FC<LineGraphProps> = ({
   populationData,
   prefecturesWithCheck: prefectures,
 }) => {
-  const combinedPopulationByYearData = useMemo(() => {
-    const yearMap: { [key: number]: { year: number; [key: string]: number | null } } = {};
-
-    populationData.forEach((popData) => {
-      popData.data.forEach((entry) => {
-        if (yearMap[entry.year] === undefined) {
-          yearMap[entry.year] = { year: entry.year };
-        }
-        yearMap[entry.year][popData.prefName] = entry.value;
-      });
-    });
-
-    Object.values(yearMap).forEach((yearData) => {
-      populationData.forEach((popData) => {
-        if (!(popData.prefName in yearData)) {
-          yearData[popData.prefName] = null;
-        }
-      });
-    });
-
-    return Object.values(yearMap);
-  }, [populationData]);
+  const combinedPopulationByYearData = combinePopulationByYearData(populationData);
 
   //グラフを見た目上連続にするため、boundaryYearのデータは重複して描画する
   const actualData = combinedPopulationByYearData.filter((d) => d.year <= boundaryYear);
