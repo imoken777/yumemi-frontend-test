@@ -5,7 +5,7 @@ import { usePopulationLabel } from '../../hooks/usePopulationLabel';
 import { usePrefectureCheck } from '../../hooks/usePrefectureCheck';
 import Home from '../../pages/index';
 
-jest.mock('../../components/LineGraphComponent/LineGraph', () => {
+jest.mock('../../components/PopulationLineGraph/PopulationLineGraph', () => {
   const LineGraphComponent = () => <div>LineGraphComponent</div>;
   LineGraphComponent.displayName = 'LineGraphComponent';
   return LineGraphComponent;

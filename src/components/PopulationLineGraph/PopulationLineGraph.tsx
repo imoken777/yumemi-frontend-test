@@ -18,13 +18,13 @@ import {
   numberToColor,
 } from '../../utils/graphCustom';
 
-type LineGraphProps = {
+type PopulationLineGraphProps = {
   boundaryYear: AllPopulationData['boundaryYear'];
   populationData: PopulationData[];
   prefecturesWithCheck: PrefectureWithCheck[];
 };
 
-const LineGraphComponent: FC<LineGraphProps> = ({
+const PopulationLineGraph: FC<PopulationLineGraphProps> = ({
   boundaryYear: boundaryYear,
   populationData,
   prefecturesWithCheck: prefectures,
@@ -101,4 +101,4 @@ const LineGraphComponent: FC<LineGraphProps> = ({
   );
 };
 
-export default LineGraphComponent;
+export default PopulationLineGraph;
