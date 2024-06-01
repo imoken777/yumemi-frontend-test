@@ -2,7 +2,7 @@
 
 [2weeksフロントエンドサマーインターン](https://hrmos.co/pages/yumemi/jobs/12345678901234567894)に応募した際の選考の過程で取り組んだもの
 
-**総開発時間:**
+**総開発時間: 32時間**
 
 **頂いた評価:**
 
@@ -30,6 +30,6 @@ npm run dev
 
 ## デプロイ
 
-このアプリケーションは、GitHub Pagesにデプロイされています。
+このアプリケーションは、[Vercel](https://vercel.com/)にデプロイされています。
 デプロイされたWebサイトは、以下のURLから確認できます。
-<https://imoken777.github.io/yumemi-frontend-test/>
+<https://yumemi-frontend-test-gamma.vercel.app/>
